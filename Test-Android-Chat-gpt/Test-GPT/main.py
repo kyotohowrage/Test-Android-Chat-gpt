@@ -72,10 +72,10 @@ class Container(GridLayout):
                     reader, writer = await asyncio.open_connection(server_ip, server_port)
                     writer.write(message.encode())
                     await writer.drain()
-
-                    response = await reader.read(1024)
+                    #Размер буфера сообщения
+                    response = await reader.read(4096)
                     self.update_response(response.decode())
-
+                    
                     writer.close()
 
                 except OSError as e:
