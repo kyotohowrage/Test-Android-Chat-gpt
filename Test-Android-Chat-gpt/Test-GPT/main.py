@@ -1,10 +1,9 @@
 import sys
 from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
-from kivy.uix.label import Label
 from kivy.core.window import Window
+from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
@@ -12,35 +11,40 @@ import asyncio
 from functools import partial
 
 
-class ClientApp(App):
-    def build(self):
-        layout = GridLayout(cols=1)
 
-        question_label = Label(text="ChatGPT - OpenAI", size_hint=(0.5, None))
-        layout.add_widget(question_label)
-
-        self.message_input = TextInput()
-        self.message_input.hint_text = "Задайте свой вопрос:"
-        layout.add_widget(self.message_input)
-
-        send_button = Button(text="ОТПРАВИТЬ", on_press=self.send_message_async,
-                             background_color=(0.3, 0.9, 0.3, 1),
-                             background_normal='',
-                             size_hint=(0.5, None))
-        layout.add_widget(send_button)
-
-        self.response_input = TextInput(readonly=True)
-        self.response_input.hint_text = "ChatGPT:"
-        layout.add_widget(self.response_input)
-
-        return layout
+class Container(GridLayout):
+    
+    
+    #  значения идут из сlient.kv
+    # values are going from сlient.kv
+    label_w = ObjectProperty()
+    text_input_w = ObjectProperty()
+    button_send_w = ObjectProperty()
+    # text_input_readonly_w = ObjectProperty()
 
 
+
+   
+
+    
+    
+
+     # checking for empty message
+    def on_text_change(self, text):
+        if len(text.strip()) == 0 or text.isspace():
+            self.button_send_w.disabled = True
+        else:
+            self.button_send_w.disabled = False
+
+
+    # func for send message to server
     def send_message_async(self, *args):
-        message = self.message_input.text
-        self.message_input.text = ""
 
-        # Проверка на пустой текст сообщения
+
+        message = self.text_input_w.text
+        self.text_input_w.text = ""
+
+         # Проверка на пустой текст сообщения
         if not message.strip():
             self.update_response("Ошибка: Пустой текст сообщения")
             return
@@ -50,7 +54,7 @@ class ClientApp(App):
         server_port = 80
 
         # Отображение модального окна с индикатором загрузки
-        loading_popup = Popup(title="ЗГРУЗКА", content=ProgressBar(max=10), size_hint=(0.3, 0.1),
+        loading_popup = Popup(title="ЗАГРУЗКА", content=ProgressBar(max=10), size_hint=(0.3, 0.1),
                               background_color=(0,0,0))
         loading_popup.open()
 
@@ -88,8 +92,15 @@ class ClientApp(App):
         Clock.schedule_once(partial(send_message_sync), 0)
 
     def update_response(self, response):
-        self.response_input.text = response
+        self.label_w.text = response
+        
+
+
+class ClientApp(MDApp):
+    def build(self):
+        return Container()
 
 
 if __name__ == "__main__":
+    Window.clearcolor = (1, 1, 1, 1)  # Цвет фона окна
     ClientApp().run()

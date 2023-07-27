@@ -1,0 +1,46 @@
+<Container>
+    rows:5
+
+
+    # id
+    label_w:label
+    text_input_w:text_input
+    button_send_w:button_send
+    # text_input_readonly_w:text_input_readonly
+    # box_lyout_message_w:box_lyout_message
+    
+    Label:
+        padding: ('20dp', '20dp', '20dp', '20dp')
+        id: label
+        text:'Добро пожаловать в чат!'
+        text_size: self.width, None
+        size_hint: 0.5 , None
+        # height: self.
+        texture_size: None, None
+        color: 0 , 0 , 0 , 1
+
+        halign:'left'
+        valign:'top'
+    
+    BoxLayout:
+        orientation:'horizontal'
+        MDTextField:
+            id: text_input
+            required: True
+            hint_text:'Что хотите узнать?'
+            multiline: False
+            size_hint: 1, 0
+            background_color: 0.8 , 0.8 , 0.8 , 1
+            on_text: root.on_text_change(self.text)
+
+        MDRoundFlatButton:
+            id: button_send
+            icon: "pancil"
+            text_color: "darkblue"
+            disabled:True
+            text:'Отправить.'
+            size_hint: 0.1, 0.0
+            background_color:0.3, 0.6, 0.9, 1
+            on_release:
+                root.send_message_async()
+        
