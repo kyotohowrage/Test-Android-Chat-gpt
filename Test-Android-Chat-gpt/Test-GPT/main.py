@@ -59,7 +59,13 @@ class Container(GridLayout):
 
 class ClientApp(MDApp):
     def build(self):
+        # Обработка изменения размеров окна
+        Window.bind(on_resize=self.on_window_resize)
         return Container()
+
+    def on_window_resize(self, instance, width, height):
+        # При изменении размеров окна, изменяем размер TextInput для обработки клавиатуры
+        self.root.ids.keyboard_helper.height = height / 2
 
 
 if __name__ == "__main__":
