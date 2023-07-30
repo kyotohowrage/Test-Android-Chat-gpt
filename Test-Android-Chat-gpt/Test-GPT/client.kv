@@ -37,3 +37,9 @@
             background_color: 0.3, 0.6, 0.9, 1
             on_release:
                 root.send_message_async()
+
+    # Добавляем TextInput для обработки изменения размера клавиатуры
+    TextInput:
+        id: keyboard_helper
+        size_hint_y: None
+        height: 0
